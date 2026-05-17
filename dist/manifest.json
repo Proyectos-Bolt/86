@@ -1,0 +1,49 @@
+{
+  "name": "SpeedCabs Zapotlán",
+  "short_name": "SpeedCabs",
+  "description": "Aplicación de taxímetro para SpeedCabs Zapotlán",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1a1a2e",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231a1a2e' width='192' height='192'/><circle cx='96' cy='96' r='70' fill='%233b82f6'/><path d='M96 50v46l30 30' stroke='%23ffffff' stroke-width='4' fill='none' stroke-linecap='round'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%231a1a2e' width='512' height='512'/><circle cx='256' cy='256' r='186' fill='%233b82f6'/><path d='M256 133v122l80 80' stroke='%23ffffff' stroke-width='10' fill='none' stroke-linecap='round'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["transportation", "productivity"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%231a1a2e' width='540' height='720'/><text x='270' y='360' text-anchor='middle' fill='%233b82f6' font-size='48' font-weight='bold'>SpeedCabs</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Iniciar Viaje",
+      "short_name": "Viaje",
+      "description": "Inicia un nuevo viaje",
+      "url": "/?action=start",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231a1a2e' width='192' height='192'/><circle cx='96' cy='96' r='70' fill='%233b82f6'/><path d='M96 50v46l30 30' stroke='%23ffffff' stroke-width='4' fill='none' stroke-linecap='round'/></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
