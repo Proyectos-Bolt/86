@@ -444,12 +444,16 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
 
     // Si routeBaseFare está activo
     if (routeBaseFare !== null) {
-      // Walmart: incremente $5 por km después de 4km
+      // Walmart: incremento $10 por km después de 4km
       if (routeType === 'walmart' && distanceKm > 4) {
         const extraKmAfter4 = distanceKm - 4;
-        fare += extraKmAfter4 * 5;
+        fare += extraKmAfter4 * 10;
       }
-      // Tecnológico: precio fijo sin aumentos (routeType === 'tecnologico')
+      // Tecnológico: incremento $10 por km después de 5.1km
+      if (routeType === 'tecnologico' && distanceKm > 5.1) {
+        const extraKmAfter51 = distanceKm - 5.1;
+        fare += extraKmAfter51 * 10;
+      }
     } else {
       if (selectedTripType.id !== 'normal') {
         // Para viajes diferentes a "Viaje Normal": precio base + 10 MXN por km después de 5 km

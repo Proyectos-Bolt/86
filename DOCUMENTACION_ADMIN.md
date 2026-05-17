@@ -247,13 +247,13 @@ const isAdmin = false; // Comentar la verificación normal
 
 #### 1. Tecnológico
 - **Base:** $70
-- **Incremento:** $5 por km después de 5.1km
-- **Comportamiento:** Precio fijo hasta 5.1km, luego aumenta $5/km
+- **Incremento:** $10 por km después de 5.1km
+- **Comportamiento:** Precio fijo hasta 5.1km, luego aumenta $10/km
 
 #### 2. Walmart
 - **Base:** $60
-- **Incremento:** $5 por km después de 4km
-- **Comportamiento:** Precio fijo hasta 4km, luego aumenta $5/km
+- **Incremento:** $10 por km después de 4km
+- **Comportamiento:** Precio fijo hasta 4km, luego aumenta $10/km
 
 ### Implementación Técnica
 
@@ -421,7 +421,7 @@ Los campos aparecen en el perfil del usuario dentro de la aplicación:
 ## Rutas - Precio Fijo Sin Incremento por Distancia
 
 ### Descripción
-Cuando se selecciona un destino desde el modal de Rutas (ej: Agricola Paredes Base con costo $100), el precio es **FIJO** y **NO se incrementa por la distancia recorrida**.
+Cuando se selecciona un destino desde el modal de Rutas (ej: Agricola Paredes Base con costo $100), el precio es **FIJO** y **NO se incrementa por la distancia recorrida**. Esta regla aplica únicamente a los destinos del modal de viviendas, NO a Tecnológico ni Walmart (que sí aplican incremento por km).
 
 ### Comportamiento
 - El usuario selecciona una ruta y destino en el modal
@@ -479,10 +479,15 @@ const [tarifaTipo, setTarifaTipo] = useState<'normal' | 'especial' | 'soriana'>(
 
 ## Historial de Cambios
 
+### Versión 1.5 (2026-05-17)
+- Incremento por km de rutas especiales cambiado de $5 a $10 para Walmart y Tecnológico
+- Tecnológico ahora aplica incremento de $10/km después de 5.1km (antes era precio fijo sin incremento)
+- Walmart aplica incremento de $10/km después de 4km (antes era $5/km)
+
 ### Versión 1.4 (2026-05-16)
 - Agregada ruta "Walmart" con tarifa base $60 + $5/km después de 4km
 - Agregado estado `routeType` para diferenciar entre rutas especiales
-- Modificada lógica de cálculo: Walmart aplica incremento por distancia, Tecnológico es fijo
+- Modificada lógica de cálculo: Walmart aplica incremento por distancia, Tecnológico era fijo
 - Documentada nueva ruta en sección "Rutas de Precio Fijo/Dinámico"
 
 ### Versión 1.3 (2026-04-21)
