@@ -110,7 +110,7 @@ export const InstallPrompt: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg shadow-lg p-4 flex flex-col gap-3 z-40 max-w-md mx-auto animate-slide-up">
+    <div className="fixed top-4 left-4 right-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg shadow-lg p-4 flex flex-col gap-3 z-50 max-w-md mx-auto animate-slide-down">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Download className="w-6 h-6 flex-shrink-0" />
@@ -127,16 +127,16 @@ export const InstallPrompt: React.FC = () => {
         </button>
       </div>
 
-      {deferredPrompt ? (
-        <button
-          onClick={handleInstall}
-          className="w-full bg-white text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-lg font-bold text-sm transition duration-200"
-        >
-          Instalar ahora
-        </button>
-      ) : (
+      <button
+        onClick={handleInstall}
+        className="w-full bg-white text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-lg font-bold text-sm transition duration-200"
+      >
+        Instalar ahora
+      </button>
+
+      {!deferredPrompt && (
         <div className="text-xs space-y-1 bg-white/10 rounded-lg p-3">
-          <p className="font-semibold">Cómo instalar:</p>
+          <p className="font-semibold">Cómo instalar manualmente:</p>
           <p>• Chrome/Edge: Menu (⋮) → "Instalar app" o "Añadir a pantalla principal"</p>
           <p>• Safari iOS: Compartir (↑) → "Añadir a pantalla de inicio"</p>
           <p>• Firefox: Menu (≡) → "Instalar" o "Añadir a pantalla principal"</p>
@@ -144,9 +144,9 @@ export const InstallPrompt: React.FC = () => {
       )}
 
       <style>{`
-        @keyframes slide-up {
+        @keyframes slide-down {
           from {
-            transform: translateY(100%);
+            transform: translateY(-100%);
             opacity: 0;
           }
           to {
@@ -154,8 +154,8 @@ export const InstallPrompt: React.FC = () => {
             opacity: 1;
           }
         }
-        .animate-slide-up {
-          animation: slide-up 0.3s ease-out;
+        .animate-slide-down {
+          animation: slide-down 0.3s ease-out;
         }
       `}</style>
     </div>
