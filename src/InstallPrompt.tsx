@@ -10,7 +10,7 @@ export const InstallPrompt: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
-  const [isBrowser, setIsBrowser] = useState(false);
+  const [installFailed, setInstallFailed] = useState(false);
 
   useEffect(() => {
     // Detectar si es PWA standalone
@@ -24,33 +24,26 @@ export const InstallPrompt: React.FC = () => {
     // Si ya es PWA, no mostrar nada
     if (isPWA) return;
 
-    // Detectar si está en navegador (no PWA instalada)
-    // Verificar si el navegado soporta instalación de PWA
-    const isRunningInBrowser = !isPWA &&
-                               'serviceWorker' in navigator &&
-                               window.matchMedia('(display-mode: browser)').matches;
+    // Verificar si el usuario ya cerró el prompt antes
+    const dismissed = localStorage.getItem('pwa-install-dismissed');
+    const dismissedTime = dismissed ? parseInt(dismissed, 10) : 0;
+    const oneDayMs = 24 * 60 * 60 * 1000;
 
-    setIsBrowser(isRunningInBrowser);
+    // Mostrar si nunca se cerró o si pasaron más de 24 horas
+    const shouldShowPrompt = !dismissed || (Date.now() - dismissedTime > oneDayMs);
 
-    // Si está en navegador, mostrar prompt inmediatamente
-    if (isRunningInBrowser) {
-      // Verificar si el usuario ya cerró el prompt antes
-      const dismissed = localStorage.getItem('pwa-install-dismissed');
-      const dismissedTime = dismissed ? parseInt(dismissed, 10) : 0;
-      const oneDayMs = 24 * 60 * 60 * 1000;
-
-      // Mostrar si nunca se cerró o si pasaron más de 24 horas
-      if (!dismissed || (Date.now() - dismissedTime > oneDayMs)) {
-        setShowPrompt(true);
-      }
+    if (shouldShowPrompt) {
+      // Mostrar prompt inmediatamente mientras esperamos el evento beforeinstallprompt
+      setShowPrompt(true);
     }
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       const event = e as BeforeInstallPromptEvent;
       setDeferredPrompt(event);
-      // Si recibimos el evento, aseguramos que el prompt se muestre
-      if (!isStandalone) {
+      setInstallFailed(false);
+      // Asegurar que el prompt se muestre
+      if (!isPWA && shouldShowPrompt) {
         setShowPrompt(true);
       }
     };
@@ -59,6 +52,7 @@ export const InstallPrompt: React.FC = () => {
       setShowPrompt(false);
       setDeferredPrompt(null);
       setIsStandalone(true);
+      setInstallFailed(false);
       localStorage.removeItem('pwa-install-dismissed');
     };
 
@@ -79,22 +73,29 @@ export const InstallPrompt: React.FC = () => {
         setIsStandalone(e.matches);
       });
     };
-  }, [isStandalone]);
+  }, []);
 
   const handleInstall = async () => {
     // Si tenemos el evento nativo, usarlo
     if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+      try {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
 
-      if (outcome === 'accepted') {
-        setDeferredPrompt(null);
-        setShowPrompt(false);
+        if (outcome === 'accepted') {
+          setDeferredPrompt(null);
+          setShowPrompt(false);
+        } else {
+          // Usuario canceló la instalación
+          setInstallFailed(true);
+        }
+      } catch (error) {
+        console.error('Error al instalar:', error);
+        setInstallFailed(true);
       }
     } else {
-      // Si no hay evento nativo, mostrar instrucciones
-      // El prompt ya tiene el mensaje, solo se cierra al aceptar
-      setShowPrompt(false);
+      // No hay evento nativo disponible aún
+      setInstallFailed(true);
     }
   };
 
@@ -129,17 +130,28 @@ export const InstallPrompt: React.FC = () => {
 
       <button
         onClick={handleInstall}
-        className="w-full bg-white text-blue-600 hover:bg-blue-50 px-4 py-3 rounded-lg font-bold text-sm transition duration-200"
+        disabled={!deferredPrompt}
+        className={`w-full px-4 py-3 rounded-lg font-bold text-sm transition duration-200 ${
+          deferredPrompt
+            ? 'bg-white text-blue-600 hover:bg-blue-50'
+            : 'bg-white/50 text-blue-600/70 cursor-not-allowed'
+        }`}
       >
-        Instalar ahora
+        {deferredPrompt ? 'Instalar ahora' : 'Preparando instalación...'}
       </button>
 
       {!deferredPrompt && (
         <div className="text-xs space-y-1 bg-white/10 rounded-lg p-3">
-          <p className="font-semibold">Cómo instalar manualmente:</p>
-          <p>• Chrome/Edge: Menu (⋮) → "Instalar app" o "Añadir a pantalla principal"</p>
+          <p className="font-semibold">Instalación manual:</p>
+          <p>• Chrome/Edge: Menu (⋮) → "Instalar app"</p>
           <p>• Safari iOS: Compartir (↑) → "Añadir a pantalla de inicio"</p>
-          <p>• Firefox: Menu (≡) → "Instalar" o "Añadir a pantalla principal"</p>
+          <p>• Firefox: Menu (≡) → "Instalar"</p>
+        </div>
+      )}
+
+      {installFailed && (
+        <div className="text-xs bg-yellow-500/20 rounded-lg p-2 text-center">
+          La instalación automática no está disponible. Usa las instrucciones manuales arriba.
         </div>
       )}
 
