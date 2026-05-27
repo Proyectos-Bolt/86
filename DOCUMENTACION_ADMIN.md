@@ -360,6 +360,7 @@ Cada vez que el conductor finaliza un viaje (botón "Finalizar Viaje"), TODOS lo
 ### Variables que se Reinician en `stopTrip()` (App.tsx)
 - `routeBaseFare` → `null` (tarifa base de ruta especial)
 - `sorianaActive` → `false` (modo Soriana)
+- `viaje60Active` → `false` (viaje de $60)
 - Extras → `0`
 - Paradas → estado inicial
 - Tipo de tarifa → tarifa normal
@@ -373,9 +374,76 @@ const stopTrip = () => {
   // ... logica de guardado
   setRouteBaseFare(null);      // reset tarifa de ruta
   setSorianaActive(false);     // reset modo Soriana
+  setViaje60Active(false);     // reset viaje de $60
   setExtras(0);                // reset extras
   // ... cualquier nuevo estado debe resetearse aqui tambien
 };
+```
+
+---
+
+## Opcion "Viaje de $60"
+
+### Descripcion
+Es una opcion rapida para establecer un precio base fijo de $60 MXN para el viaje, similar a "Servicio Especial - Recoger ($60)" pero con un toggle mas simple.
+
+### Ubicacion en la Interfaz
+- **Seccion:** Controles de Viaje (debajo de Mascota)
+- **Posicion:** Justo antes de "Servicio Especial"
+- **Control:** Boton toggle "Inactivo" / "Activo"
+
+### Comportamiento
+1. **Al activar:**
+   - Establece `viaje60Active = true`
+   - El precio base se fija en $60 MXN
+   - Aplica incremento de $10/km despues de 5km (logica de viaje especial)
+   - El boton cambia a verde "Activo"
+
+2. **Durante el viaje:**
+   - El precio base permanece en $60 MXN
+   - Se calculan extras normal (tiempo espera, mascotas, personas extras, paradas)
+   - No se puede cambiar mientras el viaje esta en curso
+
+3. **Al finalizar viaje:**
+   - Se resetea automaticamente a `false`
+   - El boton vuelve a gris "Inactivo"
+   - El siguiente viaje inicia con tarifa base normal ($50)
+
+### Codigo Relevante
+
+**Estado (App.tsx):**
+```typescript
+const [viaje60Active, setViaje60Active] = useState(false);
+```
+
+**Logica de Calculo (App.tsx ~linea 432):**
+```typescript
+} else if (viaje60Active) {
+  // Si Viaje de $60 esta activo, usar $60 como precio base
+  baseFareToUse = 60;
+}
+```
+
+**UI (App.tsx ~linea 2286):**
+```typescript
+{/* Viaje de $60 Selector */}
+<div className="flex justify-between items-center">
+  <div className="flex items-center">
+    <span className="text-sm text-white">Viaje de $60</span>
+  </div>
+  <button
+    onClick={() => setViaje60Active(!viaje60Active)}
+    className={`px-3 py-1 rounded-full text-xs font-semibold transition ${viaje60Active ? 'bg-green-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'}`}
+    disabled={tripData.isRunning}
+  >
+    {viaje60Active ? 'Activo' : 'Inactivo'}
+  </button>
+</div>
+```
+
+**Reset en stopTrip() (App.tsx ~linea 714):**
+```typescript
+setViaje60Active(false);
 ```
 
 ---

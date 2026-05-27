@@ -293,6 +293,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
     type: 'recoger' as const,
     cost: 0
   });
+  const [viaje60Active, setViaje60Active] = useState(false);
   const [showFinalizarParada, setShowFinalizarParada] = useState(false); // No usada actualmente, pero se mantiene
   const [costoAcumuladoParadas, setCostoAcumuladoParadas] = useState(0);
   const [numeroParadas, setNumeroParadas] = useState(0);
@@ -358,6 +359,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
   const [selectedDestino, setSelectedDestino] = useState<string | null>(null);
   const [routeBaseFare, setRouteBaseFare] = useState<number | null>(null);
   const [routeType, setRouteType] = useState<'tecnologico' | 'walmart' | null>(null);
+  const [viajeBase60Active, setViajeBase60Active] = useState(false); // Opcion de viaje con base $60
 
   // Estados para contar usuarios registrados
   const [totalUsuarios, setTotalUsuarios] = useState<number>(0);
@@ -427,6 +429,9 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
     let baseFareToUse;
     if (routeBaseFare !== null) {
       // Si se seleccionó una altura en Pueblito/Pared, usar ese costo como base
+    } else if (viaje60Active) {
+      // Si Viaje de $60 está activo, usar $60 como precio base
+      baseFareToUse = 60;
       baseFareToUse = routeBaseFare;
     } else if (servicioEspecialConfig.active) {
       // Si hay servicio especial, el precio base ES el costo del servicio (60 o 70)
@@ -480,7 +485,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
     }
 
     return accumulatedStopsCost + fare + (waitingMinutes * RATES.waitingRate) + petExtraFee + personasExtrasFee + tripTypeExtraFee;
-  }, [selectedTripType, selectedSubTrip, petConfig, servicioEspecialConfig, personasExtrasConfig, costoAcumuladoParadas, selectedSorianaZone, tarifaTipo, routeBaseFare, routeType]);
+  }, [selectedTripType, selectedSubTrip, petConfig, servicioEspecialConfig, personasExtrasConfig, costoAcumuladoParadas, selectedSorianaZone, tarifaTipo, routeBaseFare, routeType, viaje60Active]);
   // NOTA: Se ha agregado 'costoAcumuladoParadas' y 'tarifaTipo' a las dependencias.
 
   // Formatear tiempo
@@ -707,6 +712,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
       type: null,
       cost: 0
     });
+    setViaje60Active(false);
     setPersonasExtrasConfig({
       active: false,
       ninos: 0,
@@ -2276,6 +2282,20 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
                   </button>
                 </div>
               )}
+
+              {/* Viaje de $60 Selector */}
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <span className="text-sm text-white">Viaje de $60</span>
+                </div>
+                <button
+                  onClick={() => setViaje60Active(!viaje60Active)}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition ${viaje60Active ? 'bg-green-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'}`}
+                  disabled={tripData.isRunning}
+                >
+                  {viaje60Active ? 'Activo' : 'Inactivo'}
+                </button>
+              </div>
 
               {/* Servicio Especial Selector */}
               <div className="flex justify-between items-center">
