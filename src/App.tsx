@@ -2153,6 +2153,18 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
                 <Play className="w-8 h-8" />
                 <span className="text-md mt-1 font-bold">INICIAR VIAJE</span>
               </button>
+
+              {/* Opción Viaje de $60 - Solo visible cuando no está corriendo */}
+              {!tripData.isRunning && (
+                <div className="col-span-3 flex justify-center">
+                  <button
+                    onClick={() => setViaje60Active(!viaje60Active)}
+                    className={`w-full max-w-xs px-4 py-2 rounded-lg font-semibold text-sm transition duration-200 ${viaje60Active ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+                  >
+                    {viaje60Active ? 'Viaje de $60 - Activo' : 'Viaje de $60'}
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -2282,20 +2294,6 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
                   </button>
                 </div>
               )}
-
-              {/* Viaje de $60 Selector */}
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <span className="text-sm text-white">Viaje de $60</span>
-                </div>
-                <button
-                  onClick={() => setViaje60Active(!viaje60Active)}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold transition ${viaje60Active ? 'bg-green-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'}`}
-                  disabled={tripData.isRunning}
-                >
-                  {viaje60Active ? 'Activo' : 'Inactivo'}
-                </button>
-              </div>
 
               {/* Servicio Especial Selector */}
               <div className="flex justify-between items-center">
