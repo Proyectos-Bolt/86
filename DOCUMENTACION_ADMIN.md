@@ -417,6 +417,16 @@ Es una opcion rapida para establecer un precio base fijo de $60 MXN para el viaj
 const [viaje60Active, setViaje60Active] = useState(false);
 ```
 
+**Funcion getBasePrice (App.tsx ~linea 375):**
+```typescript
+const getBasePrice = (tripType: TripType): number => {
+  if (viaje60Active) {
+    return 60;
+  }
+  // ... resto de la logica
+};
+```
+
 **Logica de Calculo (App.tsx ~linea 432):**
 ```typescript
 } else if (viaje60Active) {

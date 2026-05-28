@@ -373,6 +373,9 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
 
   // Función para calcular la tarifa
   const getBasePrice = (tripType: TripType): number => {
+    if (viaje60Active) {
+      return 60;
+    }
     if (selectedSubTrip && tripType.id === 'cristoRey') {
       return selectedSubTrip.fixedPrice;
     }
