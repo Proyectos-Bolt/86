@@ -388,30 +388,31 @@ const stopTrip = () => {
 Es una opcion rapida para establecer un precio base fijo de $60 MXN para el viaje, similar a "Servicio Especial - Recoger ($60)" pero con un toggle mas simple.
 
 ### Ubicacion en la Interfaz
-- **Seccion:** Controles de Viaje (debajo de Mascota)
-- **Posicion:** Justo antes de "Servicio Especial"
-- **Control:** Boton toggle "Inactivo" / "Activo"
+- **Seccion:** Controles de Viaje
+- **Posicion:** Justo debajo del boton "INICIAR VIAJE"
+- **Control:** Boton toggle "Viaje de $60" / "Viaje de $60 - Activo"
+- **Solo visible cuando NO hay viaje en curso** - desaparece durante el viaje
 
 ### Comportamiento
 1. **Al activar:**
    - Establece `viaje60Active = true`
-   - El precio base se fija en $60 MXN
-   - Aplica incremento de $10/km despues de 5km (logica de viaje especial)
-   - El boton cambia a verde "Activo"
+   - El precio base se actualiza inmediatamente a $60 MXN en pantalla
+   - El boton cambia a verde con texto "Viaje de $60 - Activo"
+   - La tarifa mostrada cambia de $50 a $60 instantaneamente
 
 2. **Durante el viaje:**
    - El precio base permanece en $60 MXN
    - Se calculan extras normal (tiempo espera, mascotas, personas extras, paradas)
-   - No se puede cambiar mientras el viaje esta en curso
+   - El boton desaparece (no se puede cambiar)
 
 3. **Al finalizar viaje:**
    - Se resetea automaticamente a `false`
-   - El boton vuelve a gris "Inactivo"
+   - El boton vuelve a aparecer en gris con texto "Viaje de $60"
    - El siguiente viaje inicia con tarifa base normal ($50)
 
 ### Codigo Relevante
 
-**Estado (App.tsx):**
+**Estado (App.tsx ~linea 297):**
 ```typescript
 const [viaje60Active, setViaje60Active] = useState(false);
 ```
@@ -424,21 +425,24 @@ const [viaje60Active, setViaje60Active] = useState(false);
 }
 ```
 
-**UI (App.tsx ~linea 2286):**
+**UI - Debajo del boton Iniciar Viaje (App.tsx ~linea 2156):**
 ```typescript
-{/* Viaje de $60 Selector */}
-<div className="flex justify-between items-center">
-  <div className="flex items-center">
-    <span className="text-sm text-white">Viaje de $60</span>
+{/* Opcion Viaje de $60 - Solo visible cuando no esta corriendo */}
+{!tripData.isRunning && (
+  <div className="col-span-3 flex justify-center">
+    <button
+      onClick={() => setViaje60Active(!viaje60Active)}
+      className={`w-full max-w-xs px-4 py-2 rounded-lg font-semibold text-sm transition duration-200 ${viaje60Active ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+    >
+      {viaje60Active ? 'Viaje de $60 - Activo' : 'Viaje de $60'}
+    </button>
   </div>
-  <button
-    onClick={() => setViaje60Active(!viaje60Active)}
-    className={`px-3 py-1 rounded-full text-xs font-semibold transition ${viaje60Active ? 'bg-green-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'}`}
-    disabled={tripData.isRunning}
-  >
-    {viaje60Active ? 'Activo' : 'Inactivo'}
-  </button>
-</div>
+)}
+```
+
+**useEffect para actualizar costo (App.tsx ~linea 767):**
+```typescript
+}, [selectedTripType, selectedSubTrip, tripData.isRunning, calculateFare, isSorianaActive, tripData.distance, tripData.waitingTime, viaje60Active]);
 ```
 
 **Reset en stopTrip() (App.tsx ~linea 714):**

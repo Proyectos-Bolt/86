@@ -774,7 +774,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
         cost: calculateFare(prev.distance, waitingMinutes, isSorianaActive)
       }));
     }
-  }, [selectedTripType, selectedSubTrip, tripData.isRunning, calculateFare, isSorianaActive, tripData.distance, tripData.waitingTime]);
+  }, [selectedTripType, selectedSubTrip, tripData.isRunning, calculateFare, isSorianaActive, tripData.distance, tripData.waitingTime, viaje60Active]);
 
   // Efecto para actualizar el costo cuando cambia el tiempo de espera
   useEffect(() => {
@@ -790,14 +790,14 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
   // Efecto CLAVE para actualizar el costo total cuando cambia CUALQUIER EXTRA (Incluyendo Paradas)
   // Este useEffect garantiza que tripData.cost siempre esté actualizado con costoAcumuladoParadas
   useEffect(() => {
-    if (personasExtrasConfig.active || tripData.isRunning || petConfig.active || servicioEspecialConfig.active || isSorianaActive || costoAcumuladoParadas > 0) {
+    if (personasExtrasConfig.active || tripData.isRunning || petConfig.active || servicioEspecialConfig.active || isSorianaActive || costoAcumuladoParadas > 0 || viaje60Active) {
       const waitingMinutes = Math.floor(tripData.waitingTime / 60);
       setTripData(prev => ({
         ...prev,
         cost: calculateFare(prev.distance, waitingMinutes, isSorianaActive)
       }));
     }
-  }, [calculateFare, personasExtrasConfig, petConfig, servicioEspecialConfig, isSorianaActive, costoAcumuladoParadas, tripData.isRunning, tripData.distance, tripData.waitingTime]);
+  }, [calculateFare, personasExtrasConfig, petConfig, servicioEspecialConfig, isSorianaActive, costoAcumuladoParadas, tripData.isRunning, tripData.distance, tripData.waitingTime, viaje60Active]);
 
   // Efecto para actualizar el costo cuando cambia el tipo de tarifa
   useEffect(() => {
