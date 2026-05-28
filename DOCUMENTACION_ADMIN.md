@@ -427,13 +427,15 @@ const getBasePrice = (tripType: TripType): number => {
 };
 ```
 
-**Logica de Calculo (App.tsx ~linea 432):**
+**Logica de Calculo (App.tsx ~linea 432-437):**
 ```typescript
 } else if (viaje60Active) {
   // Si Viaje de $60 esta activo, usar $60 como precio base
   baseFareToUse = 60;
 }
 ```
+
+**IMPORTANTE:** Esta condicion debe ir ANTES de `servicioEspecialConfig.active` para que tenga prioridad.
 
 **UI - Debajo del boton Iniciar Viaje (App.tsx ~linea 2156):**
 ```typescript

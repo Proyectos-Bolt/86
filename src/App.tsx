@@ -432,10 +432,10 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
     let baseFareToUse;
     if (routeBaseFare !== null) {
       // Si se seleccionó una altura en Pueblito/Pared, usar ese costo como base
+      baseFareToUse = routeBaseFare;
     } else if (viaje60Active) {
       // Si Viaje de $60 está activo, usar $60 como precio base
       baseFareToUse = 60;
-      baseFareToUse = routeBaseFare;
     } else if (servicioEspecialConfig.active) {
       // Si hay servicio especial, el precio base ES el costo del servicio (60 o 70)
       baseFareToUse = servicioEspecialConfig.cost;
