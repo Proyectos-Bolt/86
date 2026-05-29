@@ -276,6 +276,7 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
   const [showSummary, setShowSummary] = useState(false);
   const [lastTripSummary, setLastTripSummary] = useState<TripSummary | null>(null);
   const [showRates, setShowRates] = useState(false);
+  const [showRutasEspeciales, setShowRutasEspeciales] = useState(false);
   const [currentAddress, setCurrentAddress] = useState<string>(''); // No usada actualmente, pero se mantiene
   const [googleMapsReady, setGoogleMapsReady] = useState(false); // No usada actualmente, pero se mantiene
   const [totalWaitingTime, setTotalWaitingTime] = useState(0);
@@ -2478,6 +2479,79 @@ function App({ isAdmin = false }: { isAdmin?: boolean }) {
               </label>
             </div>
           </div>
+        </div>
+
+        {/* Sección de Rutas Especiales */}
+        <div className="bg-gray-800 p-4 rounded-xl shadow-lg mb-6 border border-gray-700">
+          <div className="flex justify-between items-center cursor-pointer" onClick={() => setShowRutasEspeciales(prev => !prev)}>
+            <div className="flex items-center">
+              <MapPin className="w-5 h-5 text-blue-400 mr-2" />
+              <span className="text-sm font-medium text-gray-300">Rutas Especiales</span>
+            </div>
+            {showRutasEspeciales ? <ChevronUp className="w-5 h-5 text-white" /> : <ChevronDown className="w-5 h-5 text-white" />}
+          </div>
+
+          {showRutasEspeciales && (
+            <div className="mt-3 border-t border-gray-700 pt-3 space-y-2">
+              {/* Tecnológico */}
+              <button
+                onClick={() => {
+                  const trip = TRIP_TYPES.find(t => t.id === 'tecnologico');
+                  if (trip) {
+                    setSelectedTripType(trip);
+                    setRouteType('tecnologico');
+                    setRouteBaseFare(null);
+                    setTarifaTipo('normal');
+                    setViaje60Active(false);
+                  }
+                }}
+                className={`w-full flex justify-between items-center p-3 rounded-lg transition ${
+                  selectedTripType.id === 'tecnologico'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 hover:bg-gray-600 text-gray-200'
+                }`}
+                disabled={tripData.isRunning}
+              >
+                <div className="text-left">
+                  <div className="font-semibold">Tecnológico</div>
+                  <div className="text-xs text-gray-300">Centro → Tec. Guzmán</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold">$70</div>
+                  <div className="text-xs text-gray-300">Base</div>
+                </div>
+              </button>
+
+              {/* Walmart */}
+              <button
+                onClick={() => {
+                  const trip = TRIP_TYPES.find(t => t.id === 'walmart');
+                  if (trip) {
+                    setSelectedTripType(trip);
+                    setRouteType('walmart');
+                    setRouteBaseFare(null);
+                    setTarifaTipo('normal');
+                    setViaje60Active(false);
+                  }
+                }}
+                className={`w-full flex justify-between items-center p-3 rounded-lg transition ${
+                  selectedTripType.id === 'walmart'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 hover:bg-gray-600 text-gray-200'
+                }`}
+                disabled={tripData.isRunning}
+              >
+                <div className="text-left">
+                  <div className="font-semibold">Walmart</div>
+                  <div className="text-xs text-gray-300">Centro → Walmart Guzmán</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold">$60</div>
+                  <div className="text-xs text-gray-300">Base</div>
+                </div>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Botón de Rutas */}

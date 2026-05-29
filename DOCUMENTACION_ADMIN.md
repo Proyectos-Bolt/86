@@ -250,6 +250,24 @@ const isAdmin = false; // Comentar la verificación normal
 | 1 | Tecnológico | $70 | $10/km después de 5.1km | Precio fijo hasta 5.1km, luego aumenta $10/km |
 | 2 | Walmart | $60 | $10/km después de 4km | Precio fijo hasta 4km, luego aumenta $10/km |
 
+### Interfaz de Usuario
+
+**Sección Desplegable en App.tsx** (después de Servicios Adicionales)
+
+- **Estado:** `showRutasEspeciales` controla la visibilidad del panel
+- **Clickable Header:** "Rutas Especiales" con icono MapPin
+- **Al expandir:** Muestra lista ordenada alfabéticamente:
+  1. **Tecnológico** - Botón seleccionable ($70 base, Centro → Tec. Guzmán)
+  2. **Walmart** - Botón seleccionable ($60 base, Centro → Walmart Guzmán)
+
+**Comportamiento al seleccionar:**
+- Actualiza `selectedTripType` al tipo de ruta
+- Actualiza `routeType` ('tecnologico' o 'walmart')
+- Resetea `routeBaseFare` a null
+- Resetea `tarifaTipo` a 'normal'
+- Desactiva `viaje60Active`
+- El botón seleccionado se resalta en azul
+
 ### Implementación Técnica
 
 **Archivo:** `App.tsx`
@@ -257,6 +275,11 @@ const isAdmin = false; // Comentar la verificación normal
 **Estado:** `routeType` (línea 361)
 ```typescript
 const [routeType, setRouteType] = useState<'tecnologico' | 'walmart' | null>(null);
+```
+
+**Estado de visibilidad:** `showRutasEspeciales` (línea 279)
+```typescript
+const [showRutasEspeciales, setShowRutasEspeciales] = useState(false);
 ```
 
 **Definición de Rutas en TRIP_TYPES** (línea 122-141)
