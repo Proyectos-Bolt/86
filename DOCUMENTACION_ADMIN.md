@@ -243,17 +243,12 @@ const isAdmin = false; // Comentar la verificación normal
 
 ## Rutas y Tarifas - Rutas Especiales
 
-### Rutas de Precio Fijo/Dinámico
+### Rutas de Precio Fijo/Dinámico (Orden Alfabético)
 
-#### 1. Tecnológico
-- **Base:** $70
-- **Incremento:** $10 por km después de 5.1km
-- **Comportamiento:** Precio fijo hasta 5.1km, luego aumenta $10/km
-
-#### 2. Walmart
-- **Base:** $60
-- **Incremento:** $10 por km después de 4km
-- **Comportamiento:** Precio fijo hasta 4km, luego aumenta $10/km
+| # | Ruta | Base | Incremento | Comportamiento |
+|---|------|------|------------|----------------|
+| 1 | Tecnológico | $70 | $10/km después de 5.1km | Precio fijo hasta 5.1km, luego aumenta $10/km |
+| 2 | Walmart | $60 | $10/km después de 4km | Precio fijo hasta 4km, luego aumenta $10/km |
 
 ### Implementación Técnica
 
@@ -264,13 +259,20 @@ const isAdmin = false; // Comentar la verificación normal
 const [routeType, setRouteType] = useState<'tecnologico' | 'walmart' | null>(null);
 ```
 
-**Botones de Rutas:** (línea 2530-2554)
-- Botón Tecnológico: `setRouteType('tecnologico')`
-- Botón Walmart: `setRouteType('walmart')`
+**Definición de Rutas en TRIP_TYPES** (línea 122-141)
+```typescript
+const TRIP_TYPES: TripType[] = [
+  { id: 'normal', name: 'Viaje Normal', ... },
+  { id: 'walmart', name: 'Ruta Walmart', description: 'Centro → Walmart Guzmán', distanceKm: 5.2, fixedPrice: 60 },
+  { id: 'tecnologico', name: 'Ruta Tecnológico', description: 'Centro → Tec. Guzmán', distanceKm: 5.9, fixedPrice: 70 },
+  { id: 'cristoRey', name: 'Ruta Cristo Rey', ... },
+  { id: 'colmena', name: 'Ruta Colmena', ... }
+];
+```
 
-**Cálculo de Tarifa:** (línea 445-451)
-- Si `routeType === 'walmart'` y distancia > 4km: incremento de $5/km
-- Si `routeType === 'tecnologico'`: precio fijo sin incremento
+**Cálculo de Tarifa** (línea 456-464)
+- Si `routeType === 'walmart'` y distancia > 4km: incremento de $10/km
+- Si `routeType === 'tecnologico'` y distancia > 5.1km: incremento de $10/km
 
 ---
 
